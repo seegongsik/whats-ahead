@@ -13,6 +13,7 @@ import { addFieldShot, clearFieldLog, fieldLogText, fieldShot, readFieldLog, typ
 import type { StreetAhead } from "../street/street.js";
 import { syntheticStreet } from "../street/synthetic.js";
 import { readSaved, savePicks, saveStreet, type SavedStreet } from "../street/saved.js";
+import { introFor } from "../street/show-plan.js";
 import { StreetShow, type StreetShowOptions } from "../street/show.js";
 import { h, fmt } from "./dom.js";
 
@@ -285,10 +286,12 @@ export class App {
     // Where no street (or no place) is found, the nearest famous street is one tap away.
     const near = nearestStreet(FAMOUS_STREETS, at);
     const elsewhere = near ? { label: near.short, go: () => void this.streetFor(near) } : undefined;
-    // ?sam=0 leaves SAM 3.1 out, to compare the sign check with and without it; ?fps=1 shows how smoothly the show is drawn.
+    // ?sam=0 leaves SAM 3.1 out, to compare the sign check with and without it; ?fps=1 shows how smoothly the show is drawn;
+    // ?intro=a|b|c (가|나|다) picks how the first run opens.
     const sam = params.get("sam") !== "0";
     const fpsMeter = params.get("fps") === "1";
-    const show = new StreetShow({ origin: { lat: at.lat, lon: at.lon }, headingDeg: at.headingDeg, photo, capture, onClose: () => this.home(), onRetry, elsewhere, sam, fpsMeter, ...more });
+    const intro = introFor(params.get("intro"));
+    const show = new StreetShow({ origin: { lat: at.lat, lon: at.lon }, headingDeg: at.headingDeg, photo, capture, onClose: () => this.home(), onRetry, elsewhere, sam, fpsMeter, intro, ...more });
     this.screen(show.element);
     this.streetShow = show;
     show.start();
@@ -540,11 +543,21 @@ export class App {
   }
 }
 
+/** Settings for trying things out (?sam=0, ?fps=1, ?intro=a), kept when the address changes. */
+const TRY_PARAMS = ["sam", "fps", "intro"];
+
 /** A street from a photo is on screen: a reload comes back to it (?resume=1) rather than to the home page. */
 function resumable(on: boolean): void {
   if (on === (new URLSearchParams(location.search).get("resume") === "1")) return;
+  const query = new URLSearchParams(on ? { resume: "1" } : {});
+  for (const key of TRY_PARAMS) {
+    const value = params.get(key);
+    if (value !== null) query.set(key, value);
+  }
+  // Not query.size: Safari before 17 has no such thing.
+  const search = query.toString();
   try {
-    history.replaceState(null, "", on ? `${location.pathname}?resume=1` : location.pathname);
+    history.replaceState(null, "", search ? `${location.pathname}?${search}` : location.pathname);
   } catch {
     // A sandboxed page: the reload goes home instead.
   }

@@ -30,6 +30,7 @@ import {
   focalPx,
   IMPACT_MS,
   impactPunch,
+  INTROS,
   FOLLOW,
   followPose,
   groundAt,
@@ -61,6 +62,7 @@ import {
   type ExploreLimits,
   type Group,
   type GroupKey,
+  type Intro,
   type LightRun,
   type Pose,
   type Projected,
@@ -98,12 +100,10 @@ const EXPLORE_TAGS = 18;
 const DRAG_SLOP_PX = 6;
 /** The readings stay up this long once the street is in. */
 const HOLD_MS = 1000;
-/** The camera tilts from straight down to behind the light. */
-const TILT_MS = 1600;
-/** The light sets off this long after the tilt begins. */
-const LIGHT_DELAY_MS = 500;
 /** Before a tour the camera goes back to the start. */
 const TOUR_LEAD_MS = 1000;
+/** The whole street stands back by this much more room at the bottom: the walk's own bar, before the bottom became one bar (D50). */
+const OVERVIEW_ROOM_PX = 62;
 
 const SETTLE_MS = 1800;
 /** A dot's ripple when the light reaches it. */
@@ -128,6 +128,8 @@ export type StreetShowOptions = {
   sam?: boolean;
   /** A small meter of frames per second over the show (?fps=1), to see how smoothly a phone draws it. */
   fpsMeter?: boolean;
+  /** How the first run opens (?intro=a|b|c): the radar's pitch, the tilt in behind the light and when the light leaves. The default is c. */
+  intro?: Intro;
   /** Muse Spark's picks once they are in, to keep with the street (a street opened again uses them without asking). */
   onPicks?: (picks: Picks) => void;
   /** The street came from the live camera: once the light has run, the dot follows the phone along it. */
@@ -259,6 +261,7 @@ export function compassPoint(deg: number): string {
 export class StreetShow {
   readonly element: HTMLElement;
   private readonly options: StreetShowOptions;
+  private readonly intro: Intro;
   private readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
   private readonly nameEl: HTMLElement;
@@ -385,7 +388,8 @@ export class StreetShow {
 
   constructor(options: StreetShowOptions) {
     this.options = options;
-    this.lastPose = radarPose(options.headingDeg);
+    this.intro = options.intro ?? INTROS.c;
+    this.lastPose = this.radarPose();
     this.canvas = h("canvas", { class: "show-canvas", role: "img", "aria-label": "The street ahead, drawn as a line of light with its places as dots" });
     this.ctx = this.canvas.getContext("2d")!;
     this.kickerEl = h("div", { class: "show-kicker", text: "WHAT'S AHEAD" });
@@ -590,6 +594,11 @@ export class StreetShow {
     return Math.min(length, Math.max(600, ...focus.quest.stops.map((s) => s.s + 300)));
   }
 
+  /** Where the camera looks while the street is found: down on you, at the intro's pitch. */
+  private radarPose(): Pose {
+    return radarPose(this.options.headingDeg, this.intro.radarPitchDeg);
+  }
+
   private updateOverview(): void {
     if (!this.line) return;
     const reach = this.reach(this.focus);
@@ -597,9 +606,10 @@ export class StreetShow {
     const step = Math.max(1, Math.floor(line.length / 120));
     const pts = line.filter((_, i) => i % step === 0);
     pts.push(line[line.length - 1], { x: 0, y: 0 });
-    // The street down the middle, with room for a column of tags on each side (and the rail on the right).
+    // The street down the middle, with room for a column of tags on each side (and the rail on the right),
+    // standing back as far as it did when walking had a bar of its own at the bottom.
     const side = Math.max(60, Math.round((this.view.width - RULER_PX) * 0.27));
-    this.overview = overviewPose(pts, this.view, { top: this.insets.top + 30, bottom: this.insets.bottom + 24, left: side, right: side + RULER_PX });
+    this.overview = overviewPose(pts, this.view, { top: this.insets.top + 30, bottom: this.insets.bottom + 24 + OVERVIEW_ROOM_PX, left: side, right: side + RULER_PX });
   }
 
   // ----- Time -----
@@ -676,11 +686,11 @@ export class StreetShow {
     // The light races across stretches with none of the places it is showing.
     const empty = emptyStretches(focus ? street.shops.filter(focus.match) : street.shops, from, to);
     const light = lightRun(from, to, picks.map((p) => p.s), first ? REVEAL_PACE : focus?.quest ? { ...TOUR_PACE, dwell: 0.9 } : TOUR_PACE, empty);
-    const moveMs = first ? TILT_MS : TOUR_LEAD_MS;
-    const start = at + (first ? LIGHT_DELAY_MS : TOUR_LEAD_MS);
+    const moveMs = first ? this.intro.tiltMs : TOUR_LEAD_MS;
+    const start = at + (first ? this.intro.lightDelayMs : TOUR_LEAD_MS);
     const born = new Map<string, number>();
     for (const shop of street.shops) if (!focus || focus.match(shop)) born.set(shop.id, start + light.when(shop.s) * 1000);
-    this.run = { focus, first, from: first ? radarPose(this.options.headingDeg) : this.lastPose, beginAt: at, moveMs, start, light, chase: chaseTrack(light), born };
+    this.run = { focus, first, from: first ? this.radarPose() : this.lastPose, beginAt: at, moveMs, start, light, chase: chaseTrack(light), born };
     this.felt.clear();
     this.popAt.clear();
     // A run cuts the signs' flight short; the line about them still shows.
@@ -759,7 +769,7 @@ export class StreetShow {
     switch (this.phase) {
       case "computing":
       case "failed":
-        return radarPose(this.options.headingDeg);
+        return this.radarPose();
       case "run": {
         const run = this.run!;
         const follow = followPose(this.route!, run.chase((now - run.start) / 1000), run.first ? FOLLOW : TOUR_FOLLOW);
@@ -809,7 +819,7 @@ export class StreetShow {
     ctx.clearRect(0, 0, this.view.width, this.view.height);
     const head = this.headAt(now);
     this.drawGrid(project, pose, now, head);
-    this.drawRadar(project, now);
+    this.drawRadar(project, pose, now);
     if (this.street && this.route && this.line && this.phase !== "computing") {
       this.drawTicks(project, pose, head);
       this.drawRoute(project, pose, head);
@@ -923,19 +933,23 @@ export class StreetShow {
     return fadeIn * fadeOut;
   }
 
-  private drawRadar(project: (p: EN, z?: number) => Projected | null, now: number): void {
+  private drawRadar(project: (p: EN, z?: number) => Projected | null, pose: Pose, now: number): void {
     const alpha = this.radarAlpha(now);
     if (alpha <= 0.01) return;
     const c = project({ x: 0, y: 0 });
     const n = project({ x: 0, y: 100 });
     if (!c || !n) return;
     const ctx = this.ctx;
-    const north = Math.atan2(n.x - c.x, -(n.y - c.y));
+    // Seen at a slant, the radar lies on the ground: its rings and the compass flattened as the ground is. Straight down, round.
+    const squash = Math.max(0.2, Math.sin((pose.pitchDeg * Math.PI) / 180));
+    const north = Math.atan2(n.x - c.x, -(n.y - c.y) / squash);
     const failed = this.phase === "failed";
     const tint = failed ? "#ff6b6b" : LIGHT;
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.translate(c.x, c.y);
+    ctx.save();
+    ctx.scale(1, squash);
     ctx.globalCompositeOperation = "lighter";
     // The direction you face, up the screen.
     const breathe = 1 + 0.04 * Math.sin(now / 420);
@@ -985,19 +999,16 @@ export class StreetShow {
       ctx.lineTo(Math.sin(a) * (150 - long), -Math.cos(a) * (150 - long));
       ctx.stroke();
     }
+    // The letters and your dot stand upright, where the compass puts them on the ground.
+    ctx.restore();
     ctx.font = `600 11px ${MONO}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     for (const [i, word] of ["N", "E", "S", "W"].entries()) {
-      const a = (i * Math.PI) / 2;
-      ctx.save();
-      ctx.translate(Math.sin(a) * 166, -Math.cos(a) * 166);
-      ctx.rotate(-north);
+      const a = (i * Math.PI) / 2 + north;
       ctx.fillStyle = word === "N" ? tint : "rgba(255,255,255,0.55)";
-      ctx.fillText(word, 0, 0);
-      ctx.restore();
+      ctx.fillText(word, Math.sin(a) * 166, -Math.cos(a) * 166 * squash);
     }
-    ctx.rotate(-north);
     // Your dot.
     ctx.globalCompositeOperation = "lighter";
     ctx.drawImage(glow(tint, true), -34, -34, 68, 68);
@@ -1011,7 +1022,7 @@ export class StreetShow {
     ctx.fillText("YOU", 0, 22);
     ctx.fillStyle = tint;
     ctx.font = `600 12px ${MONO}`;
-    ctx.fillText(`${Math.round(normDeg(this.options.headingDeg))}° ${compassPoint(this.options.headingDeg)}`, 0, -252);
+    ctx.fillText(`${Math.round(normDeg(this.options.headingDeg))}° ${compassPoint(this.options.headingDeg)}`, 0, -(240 * squash + 12));
     ctx.restore();
   }
 
