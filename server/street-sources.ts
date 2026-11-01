@@ -8,7 +8,7 @@
  * OpenStreetMap (the tiles' places, or Overpass). Answers are cached per
  * instance for a quarter of an hour.
  */
-import { misplaced, rightName } from "../src/street/errata.js";
+import { leftOut, rightName } from "../src/street/errata.js";
 import { localFrame, toLatLon, toLocal, type LatLon } from "../src/geo/enu.js";
 import { latLonToTile } from "../src/data/mvt.js";
 import { shopsFromOverpass, waysFromOverpass, type Shop, type StreetWay } from "../src/street/osm.js";
@@ -245,8 +245,8 @@ export async function lookupStreet(origin: LatLon, headingDeg: number, deps: Dep
       attribution = TILE_ATTRIBUTION;
     }
   }
-  // What the data is known to get wrong (src/street/errata.ts): a place in the wrong spot is left out, a wrong name put right.
-  shops = shops.filter((shop) => !misplaced(shop)).map((shop) => rightName(shop));
+  // What the data is known to get wrong (src/street/errata.ts): a place in the wrong spot or gone is left out, a wrong name put right.
+  shops = shops.filter((shop) => !leftOut(shop)).map((shop) => rightName(shop));
   const street = buildStreetAhead({ origin, headingDeg, nameHint, ways: base.ways, shops, source, attribution, fetchedAt, synthetic: false, notes: failures, maxShops: MAX_PLACES });
   if (!street) throw new UpstreamError(502, "The street did not build twice the same way.");
   cache.set(key, { at: now(), value: street });

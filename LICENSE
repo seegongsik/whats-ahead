@@ -15,3 +15,10 @@ README.md.
 Except: public/demo/whats-ahead-loop.mp4 adapts a photo by CartographDots on
 Mapillary licensed under CC BY-SA 4.0, and is therefore itself licensed under
 CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/).
+
+Except: the files in public/demo/streets/ are saved map data, not code: the
+streets are © OpenStreetMap contributors, available under the Open Database
+License 1.0 (https://opendatacommons.org/licenses/odbl/1-0/), and the places
+are © Overture Maps Foundation, available under CDLA-Permissive-2.0
+(https://cdla.dev/permissive-2-0/). Those files are available under those
+licenses.

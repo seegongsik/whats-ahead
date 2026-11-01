@@ -13,6 +13,7 @@ import { addFieldShot, clearFieldLog, fieldLogText, fieldShot, readFieldLog, typ
 import type { StreetAhead } from "../street/street.js";
 import { syntheticStreet } from "../street/synthetic.js";
 import { readSaved, savePicks, saveStreet, type SavedStreet } from "../street/saved.js";
+import { fetchSnapshot } from "../street/demo-snapshot.js";
 import { introFor } from "../street/show-plan.js";
 import { StreetShow, type StreetShowOptions } from "../street/show.js";
 import { h, fmt } from "./dom.js";
@@ -169,6 +170,8 @@ export class App {
   private async streetFor(at: { lat: number; lon: number; headingDeg: number; street?: string; name?: string; id?: string }, photo?: HTMLCanvasElement, capture?: CaptureMeta, live = false): Promise<void> {
     // A street from a photo is kept (until the next photo), with Muse Spark's picks once they are in.
     let kept: StreetAhead | null = null;
+    // A demo street opens from its snapshot in the deployment, at once wherever it is opened (D51); without one it is looked up live.
+    const snapshot = photo || !at.id ? null : fetchSnapshot(at.id);
     // The show starts at once: its radar runs while the street is looked up.
     const show = this.openShow(at, photo, capture, () => void this.streetFor(at, photo, capture, live), {
       live,
@@ -176,14 +179,20 @@ export class App {
       simulate: !photo,
       onPicks: (picks) => kept && savePicks(kept, picks),
       onNewStreet: () => void this.openCamera(),
-      // A demo street goes by the name the world knows it by, and its picks come from the CDN.
+      // A demo street goes by the name the world knows it by; its picks come with its snapshot, or else from the CDN.
       title: photo ? undefined : at.name,
       demo: photo ? undefined : at.id,
+      snapshot: snapshot ?? undefined,
     });
     const asked = performance.now();
     // Shots from the phone go in the field log, to look into later.
     const log = (outcome: StreetAhead | string) => capture && addFieldShot(fieldShot(capture, (performance.now() - asked) / 1000, outcome));
     try {
+      const saved = snapshot ? await snapshot : null;
+      if (saved) {
+        show.load({ ...saved.street, savedAt: saved.savedAt });
+        return;
+      }
       const query = new URLSearchParams({ lat: String(at.lat), lon: String(at.lon), heading: String(at.headingDeg) });
       if (at.street) query.set("street", at.street);
       const res = await fetch(`/api/street?${query}`);

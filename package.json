@@ -16,7 +16,8 @@
     "test": "vitest run",
     "lint": "eslint .",
     "check:api": "node scripts/check-api.mjs",
-    "check:demo": "DEMO_LIVE=${DEMO_LIVE:-1} vitest run tests/demo-live.test.ts --silent=false"
+    "check:demo": "DEMO_LIVE=${DEMO_LIVE:-1} vitest run tests/demo-live.test.ts --silent=false",
+    "snapshot:demo": "node --import ./scripts/ts-hooks.mjs scripts/demo-snapshots.mjs"
   },
   "dependencies": {
     "@meta-sam/parser": "0.1.0",

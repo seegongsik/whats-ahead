@@ -31,6 +31,8 @@ export type StreetAhead = {
   notes?: string[];
   /** How many places the street had before it was cut to `shops`, when it was cut. */
   placesFound?: number;
+  /** A demo street opened from its snapshot in the deployment: when it was saved (D51). */
+  savedAt?: string;
 };
 
 export type StreetInput = {
