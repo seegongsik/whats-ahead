@@ -12,6 +12,12 @@
 
 *Fifth Avenue from 42nd Street, 2026-11-01, from the map alone (opened from its saved snapshot): the readings as the street comes in, the light stopping at a landmark, the whole street. A recording of the app taking a photo at Times Square and running 7th Avenue: [`public/demo/whats-ahead-loop.mp4`](public/demo/whats-ahead-loop.mp4) (photo by CartographDots on Mapillary, CC BY-SA 4.0).*
 
+## Why it helps
+
+- **The whole street, not only what you search for.** A map app is built for search: it shows a selection of places and waits for you to look up the rest. What's Ahead lays out every place OpenStreetMap and Overture have mapped along the street you face (up to 800, the first kilometre first: 551 in the first kilometre of Fifth Avenue), each at its distance and on its side, and zooming into a stretch names every small business in it.
+- **No ratings and reviews to read one by one.** Planning a stop usually means checking stars and reviews place by place, with no promise the search found the right ones. Here Muse Spark names the places a visitor would know (marked ✦, with its reason) and plans a short walk from them in seconds (Plan a walk). It is a judgement, shown as one; the names, distances and sides stay the map's.
+- **Meta's ecosystem, end to end.** The places come largely from Meta's place data (through Overture), Muse Spark names them, SAM 3.1 reads the signs in your photo, and a place's Instagram and Facebook page are one tap away on its card.
+
 ## At a glance
 
 | | |
