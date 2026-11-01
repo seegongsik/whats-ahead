@@ -205,13 +205,13 @@ describe("the camera", () => {
     expect(east.x).toBeCloseTo(195, 6);
   });
 
-  it("opens the first run as the address asks: a, b or c, in Latin or Korean letters, c otherwise", () => {
-    expect(introFor("a")).toBe(INTROS.a);
+  it("opens the first run as the address asks: a, b or c, in Latin or Korean letters, a (no tilt) otherwise", () => {
     expect(introFor("가")).toBe(INTROS.a);
     expect(introFor(" B ")).toBe(INTROS.b);
     expect(introFor("나")).toBe(INTROS.b);
+    expect(introFor("c")).toBe(INTROS.c);
     expect(introFor("다")).toBe(INTROS.c);
-    for (const other of [null, undefined, "", "d", "1"]) expect(introFor(other)).toBe(INTROS.c);
+    for (const other of [null, undefined, "", "d", "1"]) expect(introFor(other)).toBe(INTROS.a);
     // a has no tilt: the radar is already at the light's pitch. c starts straight down, b in between.
     expect(INTROS.a.radarPitchDeg).toBe(FOLLOW.pitchDeg);
     expect(INTROS.b.radarPitchDeg).toBeGreaterThan(FOLLOW.pitchDeg);

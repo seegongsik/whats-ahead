@@ -128,7 +128,7 @@ export type StreetShowOptions = {
   sam?: boolean;
   /** A small meter of frames per second over the show (?fps=1), to see how smoothly a phone draws it. */
   fpsMeter?: boolean;
-  /** How the first run opens (?intro=a|b|c): the radar's pitch, the tilt in behind the light and when the light leaves. The default is c. */
+  /** How the first run opens (?intro=a|b|c): the radar's pitch, the tilt in behind the light and when the light leaves. The default is a, no tilt. */
   intro?: Intro;
   /** Muse Spark's picks once they are in, to keep with the street (a street opened again uses them without asking). */
   onPicks?: (picks: Picks) => void;
@@ -388,7 +388,7 @@ export class StreetShow {
 
   constructor(options: StreetShowOptions) {
     this.options = options;
-    this.intro = options.intro ?? INTROS.c;
+    this.intro = options.intro ?? INTROS.a;
     this.lastPose = this.radarPose();
     this.canvas = h("canvas", { class: "show-canvas", role: "img", "aria-label": "The street ahead, drawn as a line of light with its places as dots" });
     this.ctx = this.canvas.getContext("2d")!;

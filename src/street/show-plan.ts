@@ -467,12 +467,13 @@ export const FOLLOW: Follow = { ahead: 150, distance: 900, pitchDeg: 38 };
 export const TOUR_FOLLOW: Follow = { ahead: 180, distance: 1050, pitchDeg: 40 };
 
 /**
- * How the first run opens, to compare on a phone (?intro=a|b|c, or 가|나|다):
+ * How the first run opens (?intro=a|b|c, or 가|나|다, to compare on a phone):
  * the radar's pitch while the street is found, how long the camera takes to
  * swing in behind the light, and when the light leaves.
  *   a (가): the radar already at the light's pitch; no tilt, only a glide in behind the light.
+ *     The default: Minwoo's pick, no tilt to make anyone queasy (D50).
  *   b (나): from 60°, a short tilt.
- *   c (다): from straight down, the long tilt (the default).
+ *   c (다): from straight down, the long tilt (the default until D50).
  */
 export type Intro = { key: "a" | "b" | "c"; radarPitchDeg: number; tiltMs: number; lightDelayMs: number };
 export const INTROS: Record<Intro["key"], Intro> = {
@@ -482,10 +483,11 @@ export const INTROS: Record<Intro["key"], Intro> = {
 };
 const INTRO_NAMES: Record<string, Intro["key"]> = { a: "a", b: "b", c: "c", 가: "a", 나: "b", 다: "c" };
 
-/** The intro a URL asks for; anything else, the default. */
+/** The intro a URL asks for; anything else, the default (a). */
 export function introFor(param: string | null | undefined): Intro {
-  return INTROS[INTRO_NAMES[(param ?? "").trim().toLowerCase()] ?? "c"];
+  return INTROS[INTRO_NAMES[(param ?? "").trim().toLowerCase()] ?? "a"];
 }
+
 /**
  * The signs' flight from the photo to the street, in milliseconds: the
  * camera glides in over where you stood, then one sign after another lifts

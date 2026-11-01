@@ -17,7 +17,7 @@ What's Ahead (first named What If Camera, a building prototype removed on 2026-1
 
 ## Commands
 
-`npm test` · `npm run lint` · `npm run build` (runs `tsc --noEmit` first) · `npm run check:api` (per-file transpile of the Vercel functions) · `npm run check:demo` (opens the nine demo streets at both addresses of the deployment: checks them and fills the CDN, which keeps a cache for each address; run after each deployment) · `npm run dev` (`?demo=street` (the SYNTHETIC street), `?street=lat,lon,heading[,name]`, `?street=fifth-avenue` (a demo street's id), `?sam=0`, `?fps=1` (frames per second over the show), `?intro=a|b|c` or `가|나|다` (how the first run opens: a at the light's angle with no tilt, b from 60°, c from straight down, the default)).
+`npm test` · `npm run lint` · `npm run build` (runs `tsc --noEmit` first) · `npm run check:api` (per-file transpile of the Vercel functions) · `npm run check:demo` (opens the nine demo streets at both addresses of the deployment: checks them and fills the CDN, which keeps a cache for each address; run after each deployment) · `npm run dev` (`?demo=street` (the SYNTHETIC street), `?street=lat,lon,heading[,name]`, `?street=fifth-avenue` (a demo street's id), `?sam=0`, `?fps=1` (frames per second over the show), `?intro=a|b|c` or `가|나|다` (how the first run opens: a at the light's angle with no tilt, the default; b from 60°; c from straight down)).
 
 In the Claude Code cloud environment, start the dev server with `NODE_USE_ENV_PROXY=1` so the API routes' own `fetch` goes through the session proxy; each outside host (Overpass, OpenFreeMap, Baseten) must be on the environment's allowed domains. The deployment is https://whats-ahead.vercel.app (the old https://whatif-camera.vercel.app opens the same deployment).
 
