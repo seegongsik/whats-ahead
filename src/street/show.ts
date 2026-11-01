@@ -420,7 +420,7 @@ export class StreetShow {
       "button",
       { class: "show-btn primary hidden", onclick: () => this.questSheet?.open() },
       buttonIcon(SPARKLE_PATH, true),
-      h("span", { class: "show-btn-text" }, h("span", { class: "show-btn-label", text: "Make a quest" }), h("span", { class: "show-btn-tag", text: "Planned by Muse Spark" })),
+      h("span", { class: "show-btn-text" }, h("span", { class: "show-btn-label", text: "Plan a walk" }), h("span", { class: "show-btn-tag", text: "By Muse Spark" })),
     );
     // Beside it, two small tools: an icon over a word, as on a phone's tab bar.
     const live = options.live === true;
@@ -1476,7 +1476,7 @@ export class StreetShow {
         const span = roadSpan(this.roadOnScreen, end.y - 20, end.y + 20);
         const side = area.right - (span?.max ?? end.x) >= (span?.min ?? end.x) - area.left ? "right" : "left";
         const rest = route.length - reach;
-        const detail = this.focus?.quest ? "QUEST'S END" : rest > 1 ? `THEN ${distanceText(rest).toUpperCase()} WITH NO PLACES` : route.length < 4990 ? "THE STREET ENDS" : "END OF ROUTE";
+        const detail = this.focus?.quest ? "THE WALK'S END" : rest > 1 ? `THEN ${distanceText(rest).toUpperCase()} WITH NO PLACES` : route.length < 4990 ? "THE STREET ENDS" : "END OF ROUTE";
         inputs.push({ key: "end", x: end.x, y: end.y, side, priority: 1e9, name: distanceText(reach), detail, item: { color: "#ffffff", end: true }, font: 11 });
       }
     }
@@ -2082,8 +2082,8 @@ export class StreetShow {
     const focus: Focus = { key: "quest", noun: "stops", color: QUEST_GOLD, match: (shop) => ids.has(shop.id), picks: [...stops].sort((a, b) => a.s - b.s), quest: { quest, stops } };
     this.questBarEl.replaceChildren(
       h("div", { class: "show-quest-text" }, h("strong", { text: `✦ ${quest.title}` }), h("span", { text: `${stops.length} stops · ${quest.source === "muse-spark-open" ? "by Muse Spark" : "picked by the app"}` })),
-      roundButton(REPLAY_PATH, "Replay the quest", () => this.beginRun(focus, this.clock())),
-      h("button", { class: "show-round", "aria-label": "End the quest", title: "End the quest", onclick: () => this.endQuest(true) }, "×"),
+      roundButton(REPLAY_PATH, "Replay the walk", () => this.beginRun(focus, this.clock())),
+      h("button", { class: "show-round", "aria-label": "End the walk", title: "End the walk", onclick: () => this.endQuest(true) }, "×"),
     );
     this.questBarEl.classList.remove("hidden", "offer");
     this.beginRun(focus, this.clock());

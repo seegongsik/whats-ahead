@@ -39,9 +39,9 @@ export async function requestQuest(
       const seconds = Math.round((body.latencyMs ?? 0) / 100) / 10;
       return { quest: body.quest, note: `Stops picked by Muse Spark Open in ${seconds} s. Names, sides and distances are the map's, not the model's.` };
     }
-    reason = body.error ?? `the quest service answered ${res.status}`;
+    reason = body.error ?? `the walk planner answered ${res.status}`;
   } catch (error) {
-    reason = `the quest service is unreachable (${error instanceof Error ? error.message : String(error)})`;
+    reason = `the walk planner is unreachable (${error instanceof Error ? error.message : String(error)})`;
   }
   const local = localQuest(places, theme);
   return local ? { quest: local, note: `Stops picked by the app: ${reason}.` } : null;
@@ -72,7 +72,7 @@ export class QuestSheet {
 
   private showThemes(): void {
     this.element.replaceChildren(
-      h("h3", { text: "Make a quest" }),
+      h("h3", { text: "Plan a walk" }),
       h("p", {
         class: "muted small",
         text: "Muse Spark Open picks two to four stops along this street for a theme, the places it knows by name first, and writes a line for each. Names, sides and distances come from the map; its own words are checked for names and numbers.",
@@ -122,14 +122,14 @@ export class QuestSheet {
       ),
     );
     this.element.replaceChildren(
-      h("div", { class: "quest-kicker", text: quest.source === "muse-spark-open" ? "✦ Quest by Muse Spark" : "Quest" }),
+      h("div", { class: "quest-kicker", text: quest.source === "muse-spark-open" ? "✦ A walk planned by Muse Spark" : "A walk" }),
       h("h3", { text: quest.title }),
       list,
       h("p", { class: "muted small", text: note }),
       h(
         "div",
         { class: "row wrap" },
-        h("button", { class: "primary", onclick: () => this.onStart(quest, stops.map((x) => x.shop)) }, "Start the quest"),
+        h("button", { class: "primary", onclick: () => this.onStart(quest, stops.map((x) => x.shop)) }, "Start the walk"),
         h("button", { onclick: () => this.showThemes() }, "Another theme"),
         h("button", { class: "ghost", onclick: () => this.close() }, "Close"),
       ),

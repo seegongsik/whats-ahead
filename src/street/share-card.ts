@@ -236,7 +236,7 @@ function drawStreet(ctx: CanvasRenderingContext2D, input: ShareInput, top: numbe
     const span = roadSpan(road, end.y - 40, end.y + 40);
     const side = area.right - (span?.max ?? end.x) >= (span?.min ?? end.x) - area.left ? "right" : "left";
     const rest = route.length - reach;
-    const detail = quest ? "QUEST'S END" : rest > 1 ? `THEN ${distanceText(rest).toUpperCase()} WITH NO PLACES` : street.route.length < 4990 ? "THE STREET ENDS" : "END OF ROUTE";
+    const detail = quest ? "THE WALK'S END" : rest > 1 ? `THEN ${distanceText(rest).toUpperCase()} WITH NO PLACES` : street.route.length < 4990 ? "THE STREET ENDS" : "END OF ROUTE";
     inputs.push({ key: "end", x: end.x, y: end.y, side, priority: 1e9, name: distanceText(reach), detail, item: { color: "#ffffff", end: true }, font: 22 });
   }
   const blocked = you ? [{ x: you.x - 24, y: you.y - 18, w: 48, h: 70 }] : [];
@@ -310,7 +310,7 @@ function drawCounts(ctx: CanvasRenderingContext2D, street: StreetAhead, y: numbe
 function drawQuest(ctx: CanvasRenderingContext2D, quest: { quest: Quest; stops: ShopAhead[] }, y: number): void {
   ctx.fillStyle = QUEST_GOLD;
   ctx.font = `600 30px ${MONO}`;
-  ctx.fillText(quest.quest.source === "muse-spark-open" ? "✦ QUEST BY MUSE SPARK" : "✦ QUEST", PAD, y + 40);
+  ctx.fillText(quest.quest.source === "muse-spark-open" ? "✦ A WALK PLANNED BY MUSE SPARK" : "✦ A WALK", PAD, y + 40);
   ctx.fillStyle = "#ffffff";
   fitFont(ctx, quest.quest.title, 800, 58, W - 2 * PAD, 36);
   ctx.fillText(ellipsize(ctx, quest.quest.title, W - 2 * PAD), PAD, y + 112);
