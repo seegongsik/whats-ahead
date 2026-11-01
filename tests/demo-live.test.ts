@@ -7,6 +7,7 @@
 // the deployment, or DEMO_LIVE=<base URL>). Both, because the CDN keeps a cache
 // for each address and a judge may have the old one (DECISIONS D43).
 import { describe, expect, it } from "vitest";
+import { readSnapshot, snapshotPath } from "../src/street/demo-snapshot.js";
 import { distanceM, FAMOUS_STREETS } from "../src/street/famous.js";
 import type { Picks } from "../src/street/picks.js";
 import type { StreetAhead } from "../src/street/street.js";
@@ -51,9 +52,15 @@ for (const base of bases) {
         // No web address standing in for a name (DECISIONS D36).
         expect(named.filter((s) => /\.(com|org|net)\b/i.test(s!.name))).toEqual([]);
         const list = answer.picks.landmarks.map((l) => `${byId.get(l.id)!.name} (${l.why})`).join(", ");
+        // The snapshot the page opens first (D51): served by the deployment, and sound.
+        const saved = await timed(`${base}${snapshotPath(demo.id)}`);
+        expect(saved.res.status).toBe(200);
+        const snapshot = readSnapshot(await saved.res.json(), demo.id);
+        expect(snapshot).not.toBeNull();
         console.log(
           `${demo.short}: street ${street.ms} ms (${street.cache}), ${body.shops.length} places (${Math.round(left * 100)}% left), ${(body.route.length / 1000).toFixed(1)} km; ` +
-            `picks ${picks.ms} ms (${picks.cache}, model ${(answer.latencyMs / 1000).toFixed(1)} s): ${list}`,
+            `picks ${picks.ms} ms (${picks.cache}, model ${(answer.latencyMs / 1000).toFixed(1)} s): ${list}; ` +
+            `snapshot ${saved.ms} ms (${saved.cache}, saved ${snapshot!.savedAt.slice(0, 10)})`,
         );
       },
       90_000,

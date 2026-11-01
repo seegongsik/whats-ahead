@@ -15,6 +15,7 @@ import type { ShopAhead } from "./ahead.js";
 import { knownIds, landmarksFrom, mergePicks, pickCandidates, PICK_MIN_PLACES, PICK_REASONS, roughPosition, type PickPlace, type PickReason, type Picks } from "./picks.js";
 import type { Quest } from "./quest.js";
 import { QuestSheet } from "./quest-ui.js";
+import { snapshotDay, type DemoSnapshot } from "./demo-snapshot.js";
 import { pointAt, type Route } from "./route.js";
 import { drawShareCard, shareCard } from "./share-card.js";
 import {
@@ -144,6 +145,8 @@ export type StreetShowOptions = {
   title?: string;
   /** A demo street's id: Muse Spark's picks along it come from the CDN, asked for as the show opens rather than once the street is in. */
   demo?: string;
+  /** A demo street's snapshot in the deployment, being fetched: its picks are used when it is there (D51). */
+  snapshot?: Promise<DemoSnapshot | null>;
 };
 
 /** What the light is showing: every place (null), one kind of place, or a quest's stops. */
@@ -258,6 +261,23 @@ export function compassPoint(deg: number): string {
   return COMPASS[Math.round(normDeg(deg) / 22.5) % 16];
 }
 
+/** Muse Spark's picks as the server, the CDN or a saved demo street gave them. */
+type PicksReply = { ok: boolean; status: number; body: { picks?: Picks; cached?: boolean; latencyMs?: number }; savedAt?: string };
+
+async function picksReply(request: Promise<Response>): Promise<PicksReply | null> {
+  try {
+    const res = await request;
+    return { ok: res.ok, status: res.status, body: (await res.json().catch(() => ({}))) as PicksReply["body"] };
+  } catch {
+    return null;
+  }
+}
+
+/** Where the street's data came from, and for a saved demo street the day it was saved. */
+function sourceText(street: StreetAhead): string {
+  return street.savedAt ? `${street.source} · saved ${snapshotDay(street.savedAt)}` : street.source;
+}
+
 export class StreetShow {
   readonly element: HTMLElement;
   private readonly options: StreetShowOptions;
@@ -315,7 +335,7 @@ export class StreetShow {
   /** Every place Muse Spark named a landmark, kept along the street or not: a quest asks it to prefer these. */
   private modelNamed = new Set<string>();
   /** A demo street's picks, asked for alongside the street (null: the page asks once the street is in). */
-  private demoPicks: Promise<Response | null> | null = null;
+  private demoPicks: Promise<PicksReply | null> | null = null;
   private demoAsked = 0;
   /** Picks that came in while the first run was naming the map's: they take over once it ends. */
   private pendingLandmarks: ShopAhead[] | null = null;
@@ -467,7 +487,12 @@ export class StreetShow {
     // A demo street's picks stand in the CDN like the street: both are asked for at once.
     if (this.options.demo) {
       this.demoAsked = performance.now();
-      this.demoPicks = fetch(`/api/landmarks?demo=${encodeURIComponent(this.options.demo)}`, { signal: this.abort.signal }).catch(() => null);
+      const live = `/api/landmarks?demo=${encodeURIComponent(this.options.demo)}`;
+      const ask = () => picksReply(fetch(live, { signal: this.abort.signal }));
+      // A saved demo street brings its picks with it; without one they come from the CDN as before.
+      this.demoPicks = this.options.snapshot
+        ? this.options.snapshot.then((saved) => (saved ? { ok: true, status: 200, body: { picks: saved.picks, latencyMs: saved.latencyMs }, savedAt: saved.savedAt } : ask()))
+        : ask();
     }
     const tick = () => {
       this.raf = requestAnimationFrame(tick);
@@ -1947,7 +1972,7 @@ export class StreetShow {
             ? `${this.landmarks.length} · by the map's ranking (Muse Spark ${this.picksNote})`
             : `${this.landmarks.length}`;
     rows.push({ id: "landmarks", key: "LANDMARKS", value: named, state: this.picksState === "asking" ? "wait" : tick(4) });
-    rows.push({ id: "source", key: "SOURCE", value: street.source, state: "info" });
+    rows.push({ id: "source", key: "SOURCE", value: sourceText(street), state: "info" });
     (street.notes ?? []).forEach((note, i) => rows.push({ id: `note${i}`, key: "NOTE", value: note, state: "info" }));
     return rows;
   }
@@ -2521,7 +2546,7 @@ export class StreetShow {
         ? h("div", { class: "show-card-also" }, h("span", { text: "Also here" }), ...near.map((o) => h("button", { class: "show-pill ghost", onclick: () => this.showCard(o) }, o.name)))
         : null,
       shop.id.startsWith("ovt/") ? h("p", { class: "show-card-source", text: "Place from Overture Maps, whose places come largely from Meta's place data (Facebook pages)." }) : null,
-      h("p", { class: "show-card-source", text: `From ${street.source}. ${street.attribution}. Places change; the map may be out of date.` }),
+      h("p", { class: "show-card-source", text: `From ${sourceText(street)}. ${street.attribution}. Places change; the map may be out of date.` }),
       h("button", { class: "show-card-close", "aria-label": "Close", onclick: () => this.closeCard() }, "×"),
     ];
     this.cardEl.replaceChildren(...parts.filter((x): x is Node => x !== null));
@@ -2632,26 +2657,29 @@ export class StreetShow {
     this.picksState = "asking";
     let asked = this.demoAsked;
     try {
-      let res = this.demoPicks ? await this.demoPicks : null;
-      if (!res) {
+      let reply = this.demoPicks ? await this.demoPicks : null;
+      if (!reply) {
         asked = performance.now();
-        res = await fetch("/api/landmarks", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ places, street: this.street?.name?.slice(0, 80), near: roughPosition(this.options.origin) }),
-          signal: this.abort.signal,
-        });
+        reply = await picksReply(
+          fetch("/api/landmarks", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ places, street: this.street?.name?.slice(0, 80), near: roughPosition(this.options.origin) }),
+            signal: this.abort.signal,
+          }),
+        );
       }
-      const body = (await res.json().catch(() => ({}))) as { picks?: Picks; cached?: boolean; latencyMs?: number };
       if (this.disposed) return;
-      if (!res.ok || !body.picks) {
+      const body = reply?.body ?? {};
+      if (!reply || !reply.ok || !body.picks) {
         this.picksState = "failed";
-        this.picksNote = res.status === 503 ? "off" : "did not answer";
+        this.picksNote = reply?.status === 503 ? "off" : "did not answer";
         return;
       }
-      // An answer kept by the server or the CDN comes back quicker than the model took to give it.
+      // An answer kept by the server or the CDN comes back quicker than the model took to give it; a saved demo street says when it was saved.
       const took = performance.now() - asked;
-      this.applyPicks(body.picks, body.cached || took + 100 < (body.latencyMs ?? 0) ? "asked before" : `${(took / 1000).toFixed(1)} s`);
+      const note = reply.savedAt ? `saved ${snapshotDay(reply.savedAt)}` : body.cached || took + 100 < (body.latencyMs ?? 0) ? "asked before" : `${(took / 1000).toFixed(1)} s`;
+      this.applyPicks(body.picks, note);
       this.options.onPicks?.(body.picks);
     } catch {
       if (this.disposed) return;

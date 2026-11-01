@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MISNAMED, misplaced, MISPLACED, rightName } from "../src/street/errata.js";
+import { CLOSED, closed, leftOut, MISNAMED, misplaced, MISPLACED, rightName } from "../src/street/errata.js";
 
 describe("places the data has in the wrong spot", () => {
   it("are known by name and where the data has them, not by a row number that changes each release", () => {
@@ -21,5 +21,19 @@ describe("places the data has in the wrong spot", () => {
     expect(rightName({ ...theatre, point: { lat: 40.7, lon: -74 } }).name).toBe("graumanschinese.org");
     expect(rightName({ ...theatre, name: "Musso & Frank Grill" }).name).toBe("Musso & Frank Grill");
     expect(MISNAMED.every((m) => m.why.length > 20 && m.as.length > 0)).toBe(true);
+  });
+});
+
+describe("places the data still has open after they are gone", () => {
+  it("are left out by name and position, and only there", () => {
+    expect(closed({ name: "Hotel Pennsylvania", point: { lat: 40.74967, lon: -73.99147 } })).toBe(true);
+    expect(closed({ name: "hotel pennsylvania", point: { lat: 40.7497, lon: -73.9915 } })).toBe(true);
+    expect(leftOut({ name: "Barneys New York, Downtown", point: { lat: 40.73998, lon: -73.99824 } })).toBe(true);
+    // The same name elsewhere, or another place there, stays.
+    expect(closed({ name: "Hotel Pennsylvania", point: { lat: 40.7484, lon: -73.9857 } })).toBe(false);
+    expect(closed({ name: "Penn Station", point: CLOSED[0].at })).toBe(false);
+    expect(CLOSED.every((m) => m.why.length > 20)).toBe(true);
+    // A misplaced place is left out as well.
+    expect(leftOut({ name: MISPLACED[0].name, point: MISPLACED[0].at })).toBe(true);
   });
 });
