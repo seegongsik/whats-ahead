@@ -1,5 +1,12 @@
 # PROGRESS
 
+## 2026-11-01 (KST) · 6일 차 ④: 「Make a quest」 → 「Plan a walk」 (D52)
+- 민우: Baseten 계정을 아직 못 찾음 → 찾는 법을 안내(메일함에서 「Baseten」 검색, app.baseten.co에 Google·GitHub로 각각 로그인, 로그인한 계정의 API keys에 Vercel의 `BASETEN_API_KEY` 앞부분이 있는지). 확인 필요(민우).
+- 민우: 「make a quest vs make a plan vs 다른 좋은 용어」 → 「Plan a walk」를 권함, 민우 「Plan a walk로 바꿔줘」 → D52. 화면 글자만 바꾸고 코드 이름은 그대로.
+- 다시 찍은 것(개발 서버, 5번가는 스냅숏): README 그림 6장(길 전체·카드·퀘스트·걷기에 새 글자), 링크 미리보기 그림(`?v=2026-11-01-2`), 랜딩 영상(21초, 2.2 MB, Muse Spark의 랜드마크 Palace Theatre·Minskoff Theatre·Museum at FIT, ✦).
+- 걸린 것: 5번가 「Rainy day」가 오전에는 메트로폴리탄·구겐하임을 골랐는데, 이번에는 여러 번 다 옆의 카페·갤러리(20~180 m)를 고름. 둘 다 테마(가까운 실내)에 맞는 답. README 그림은 「Surprise me」로 버그도프 굿맨·더 플라자·애플 5번가(1.3 km)를 고른 답. 제목은 Muse Spark의 제목이 검사를 못 넘어 테마 이름(「Surprise me」)이 대신 들어감.
+- 확인: `npm test` 163개 통과(실호출 11개 건너뜀), lint·build·check:api. 화면에 「Make a quest」·「Start the quest」·「QUEST'S END」가 남은 곳 없음(소스 검색).
+
 ## 2026-11-01 (KST) · 6일 차 ③: PR #30 머지 뒤, 데모 영상 초안, 데모 거리 스냅숏 (D51)
 - PR #30 머지(민우 「머지해줘」). 실서버 두 주소: 새 랜딩 영상(2,404,169 bytes, 21.8초 재생), 미리보기 그림 `og.jpg?v=2026-11-01`, 페이지 오류 0. `npm run check:demo` 18개 통과(새 배포라 모두 MISS).
 - 데모 영상 초안(레포 밖): 2분 2초, 1920×1080, 영어 자막, 15장면(사진 → 판독 → 7번가의 빛 → 5번가 → 카드 → 칩 → 확대 → 비 오는 날 퀘스트 → SIMULATED 걷기 → 공유 → 세계의 데모 거리 → 만든 방식 → 끝 카드). 세로 24.7초 컷. 간판 비행은 넣지 않음(타임스스퀘어 사진에서 지도의 장소와 맞은 간판이 없음). 확인 필요(민우): Mapillary 사진(CC BY-SA)이 들어간 영상을 CC BY-SA로 낼지, 아니면 그 장면을 민우의 사진으로.

@@ -467,3 +467,9 @@
 - 측정(개발 서버, 스냅숏): 5번가·7번가 API 호출 0, 판독 줄 1.8초, 빛 출발 3.6초(판독 화면의 정해진 최소). 스냅숏을 막으면 긴자가 실시간으로 6.9초에 판독, 8.6초에 출발.
 - 대가: 데모 거리는 저장한 날의 지도와 Muse Spark 결과로 고정됨. 길을 만드는 방식이나 프롬프트를 바꾸는 배포 뒤, 그리고 마감 전에 다시 저장.
 - 라이선스: 스냅숏 파일은 코드가 아니라 저장한 지도 데이터라, 길은 OpenStreetMap(ODbL), 장소는 Overture(CDLA-Permissive-2.0)로 쓸 수 있게 둠(LICENSE에 예외로, README 데이터 표에 한 줄).
+
+## D52. 「Make a quest」를 화면에서 「Plan a walk」로 (민우 2026-11-01 「Plan a walk로 바꿔줘」)
+- 까닭: 「Make a quest」는 영어로 어색하고(퀘스트는 만드는 게 아니라 떠나는 것), 보상이 있는 게임처럼 읽힘. 「Make a plan」은 무엇을 계획하는지 없음. 「Plan a walk」는 하는 일을 그대로 말하고, 옆의 Simulate(걷기)와 이어짐.
+- 바꾼 것(화면 글자만): 버튼 「Plan a walk」, 아래 작은 글씨 「By Muse Spark」(「Planned by Muse Spark」는 겹침), 시트 제목 「Plan a walk」, 결과 머리 「✦ A walk planned by Muse Spark」(앱이 고르면 「A walk」), 「Start the walk」, 길 끝 이름표와 공유 카드 「THE WALK'S END」, 공유 카드 머리 「✦ A WALK PLANNED BY MUSE SPARK」, 다시 보기·끝내기 버튼의 읽기 이름, Muse Spark가 답하지 않을 때의 문구(「the walk planner …」). Muse Spark가 짓는 제목(예: 「Rainy Day Museum Escape」)과 「Stop 2/4」는 그대로.
+- 그대로: 코드의 이름(`quest.ts`, `/api/quest`, `QUEST_THEMES`)과 문서의 기록. README는 「Plan a walk(코드에서는 quest)」로 소개.
+- 다시 찍은 것: 이 글자가 보이는 README 그림, 링크 미리보기 그림, 랜딩 영상, 데모 영상.
