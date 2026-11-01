@@ -457,14 +457,37 @@ export function lerpPose(a: Pose, b: Pose, t: number): Pose {
   };
 }
 
-/** Straight down on where the camera stands, the direction it faced at the top of the screen. */
-export function radarPose(headingDeg: number): Pose {
-  return { x: 0, y: 0, yawDeg: headingDeg, pitchDeg: 90, distance: 560 };
+/** Down on where the camera stands (straight down unless the intro says otherwise), the direction it faced at the top of the screen. */
+export function radarPose(headingDeg: number, pitchDeg = 90): Pose {
+  return { x: 0, y: 0, yawDeg: headingDeg, pitchDeg, distance: 560 };
 }
 
 export type Follow = { ahead: number; distance: number; pitchDeg: number };
 export const FOLLOW: Follow = { ahead: 150, distance: 900, pitchDeg: 38 };
 export const TOUR_FOLLOW: Follow = { ahead: 180, distance: 1050, pitchDeg: 40 };
+
+/**
+ * How the first run opens (?intro=a|b|c, or 가|나|다, to compare on a phone):
+ * the radar's pitch while the street is found, how long the camera takes to
+ * swing in behind the light, and when the light leaves.
+ *   a (가): the radar already at the light's pitch; no tilt, only a glide in behind the light.
+ *     The default: Minwoo's pick, no tilt to make anyone queasy (D50).
+ *   b (나): from 60°, a short tilt.
+ *   c (다): from straight down, the long tilt (the default until D50).
+ */
+export type Intro = { key: "a" | "b" | "c"; radarPitchDeg: number; tiltMs: number; lightDelayMs: number };
+export const INTROS: Record<Intro["key"], Intro> = {
+  a: { key: "a", radarPitchDeg: FOLLOW.pitchDeg, tiltMs: 1000, lightDelayMs: 300 },
+  b: { key: "b", radarPitchDeg: 60, tiltMs: 900, lightDelayMs: 300 },
+  c: { key: "c", radarPitchDeg: 90, tiltMs: 1600, lightDelayMs: 500 },
+};
+const INTRO_NAMES: Record<string, Intro["key"]> = { a: "a", b: "b", c: "c", 가: "a", 나: "b", 다: "c" };
+
+/** The intro a URL asks for; anything else, the default (a). */
+export function introFor(param: string | null | undefined): Intro {
+  return INTROS[INTRO_NAMES[(param ?? "").trim().toLowerCase()] ?? "a"];
+}
+
 /**
  * The signs' flight from the photo to the street, in milliseconds: the
  * camera glides in over where you stood, then one sign after another lifts

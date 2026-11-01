@@ -12,6 +12,7 @@ import {
   FLIGHT,
   flightLength,
   flightProgress,
+  FOLLOW,
   followPose,
   groundAt,
   groundScale,
@@ -19,6 +20,8 @@ import {
   groupOf,
   histogram,
   impactPunch,
+  INTROS,
+  introFor,
   kindWord,
   landmarkCount,
   lerpPose,
@@ -200,6 +203,34 @@ describe("the camera", () => {
     const east = project(pose, view, { x: 100, y: 0 })!;
     expect(east.y).toBeLessThan(422);
     expect(east.x).toBeCloseTo(195, 6);
+  });
+
+  it("opens the first run as the address asks: a, b or c, in Latin or Korean letters, a (no tilt) otherwise", () => {
+    expect(introFor("가")).toBe(INTROS.a);
+    expect(introFor(" B ")).toBe(INTROS.b);
+    expect(introFor("나")).toBe(INTROS.b);
+    expect(introFor("c")).toBe(INTROS.c);
+    expect(introFor("다")).toBe(INTROS.c);
+    for (const other of [null, undefined, "", "d", "1"]) expect(introFor(other)).toBe(INTROS.a);
+    // a has no tilt: the radar is already at the light's pitch. c starts straight down, b in between.
+    expect(INTROS.a.radarPitchDeg).toBe(FOLLOW.pitchDeg);
+    expect(INTROS.b.radarPitchDeg).toBeGreaterThan(FOLLOW.pitchDeg);
+    expect(INTROS.b.radarPitchDeg).toBeLessThan(90);
+    expect(INTROS.c.radarPitchDeg).toBe(90);
+    for (const intro of Object.values(INTROS)) {
+      expect(radarPose(0, intro.radarPitchDeg).pitchDeg).toBe(intro.radarPitchDeg);
+      expect(intro.lightDelayMs).toBeLessThan(intro.tiltMs);
+    }
+  });
+
+  it("from a slant, still puts where you stand in the middle and the heading up the screen", () => {
+    const pose = radarPose(90, INTROS.a.radarPitchDeg);
+    const you = project(pose, view, { x: 0, y: 0 })!;
+    expect(you.x).toBeCloseTo(view.width / 2, 6);
+    expect(you.y).toBeCloseTo(view.height / 2, 6);
+    const ahead = project(pose, view, { x: 100, y: 0 })!;
+    expect(ahead.x).toBeCloseTo(view.width / 2, 6);
+    expect(ahead.y).toBeLessThan(you.y);
   });
 
   it("turns the short way round", () => {
