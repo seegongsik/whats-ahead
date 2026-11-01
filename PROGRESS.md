@@ -7,6 +7,7 @@
   - 공식 대회 페이지(cerebralvalley.ai의 .md): 주제 둘(Build for Your World, Push the Frontier), 인디 트랙은 창의성·기술적 야심·작동 여부, 마감 11월 4일 21:00 ET(= 11월 5일 11:00 KST). 제출 양식 항목은 여전히 로그인 뒤라 확인 필요.
   - 심사위원처럼 실서버 점검(노트북 1440×900): 첫 버튼 「Fly down Fifth Avenue」, 레이더 38°, 칩 달리기, 퀘스트 테마 6개. 페이지 오류 0.
   - README: 트랙·주제, 실서버 5번가 그림 셋을 지금 화면으로(판독, Cartier에 멈춘 빛, 길 전체), 「How it works」의 SYNTHETIC 그림 대신 카드·Muse Spark 퀘스트(비 오는 날: 메트로폴리탄·구겐하임)·SIMULATED 걷기 그림, 테스트 145 → 152개, 첫 커밋(10월 26일)은 GitHub가 넣은 라이선스 파일뿐이라는 것, 측정 줄을 오늘 값으로.
+  - 링크 미리보기 그림(`public/og.jpg`)도 오늘 그림 셋으로 다시 만듦. 공유 사이트가 예전 그림을 들고 있지 않게 주소에 `?v=2026-11-01`.
   - 랜딩 영상 다시 녹화(지금 하단 막대와 38° 시작). 첫 녹화는 Muse Spark가 6.8초 걸려 첫 달리기가 지도 순위로 감(Niles NYC Bar, Nordstrom). 서버에 답이 남은 뒤 다시 찍어 빛이 Muse Spark의 랜드마크(Palace Theatre, Hard Rock Cafe, Midtown Comics, Museum at FIT, ✦)에 멈춤. 22초, 2.4 MB, 포스터는 Hard Rock Cafe에 멈춘 순간.
 - 찾은 것(확인 필요, 민우 결정): CDN이 데모 거리를 오래 들고 있지 않음. `check:demo`로 채운 지 40분 뒤 whats-ahead 주소에서 9곳 중 8곳이 다시 MISS(워싱턴 iad1): 길 2.8~7.6초, Muse Spark 다시 호출 6.4~13.7초. 5번가만 HIT. 심사위원의 첫 방문은 판독 화면에서 몇 초 기다릴 수 있음(Muse Spark는 6초까지만 기다리고 그 뒤 지도 순위로 출발). 제안: 데모 거리 9곳의 길과 Muse Spark 랜드마크를 날짜를 붙인 스냅숏으로 배포에 넣고 먼저 씀.
 - 확인: `npm test` 152개 통과(실호출 11개 건너뜀), lint·build·check:api.
