@@ -1,5 +1,12 @@
 # PROGRESS
 
+## 2026-11-02 (KST) · 7일 차 ③: Discord FAQ, open-weight, CI와 1분 심사 경로
+- 민우가 Discord #faqs를 공유. 심사는 Impact·Use of Meta AI tooling·Technical depth and execution·Demo quality를 같은 비중으로, 「심사위원은 영상·코드·실제 서비스를 본다」, 심사 기간 11월 5~8일. 보너스 상: Most Viral $20k(X 게시물, 11월 8일까지 반응), Best Build on Meta Open Weight Models $10k, Community Vote $10k(11월 9일부터 한 계정 한 표), Best Agentic Use-Case $5k, Best Creative Build $5k. FAQ가 Muse Spark Open을 Meta의 open-weight 모델로 꼽음.
+- open-weight: README에 「Meta's open-weight Muse Spark Open」(PR #36 머지). 민우가 양식의 두 문장(프로젝트 설명, Meta 제품 사용)에 open-weight를 넣음(Update Project).
+- 다른 참가작 몇 개를 봄(공개 저장소, 읽기만). 우리 쪽에 없던 것: CI 배지, README 맨 위의 짧은 심사 경로, 코딩 도구를 밝힌 줄.
+- 한 것(민우 「해줘」): GitHub Actions CI(`.github/workflows/ci.yml`: lint, build, test, check:api; check:demo는 배포를 부르므로 뺌), README 맨 위 CI 배지와 「Try it in a minute」(네 단계), 「Built solo by Minwoo Kwon, with Claude Code as the coding assistant」 한 줄, 패키지 표에 CI 액션(MIT). 앱 코드는 그대로.
+- Discord 소개 글 초안(영어)을 드림. 올릴지는 민우.
+
 ## 2026-11-02 (KST) · 7일 차 ②: 제출
 - PR #34 머지(민우 「머지해줘」). 배포 뒤 `npm run check:demo` 18개 통과. README 맨 위 「Watch」에 데모 영상 링크.
 - 민우가 GitHub 저장소 About과 Social preview를 고침. 확인(GitHub API·저장소 페이지): 설명과 웹사이트(whats-ahead.vercel.app)는 새것. 토픽 12개 중 하나가 오타(`warlking` → `walking`, 민우가 고칠 것). Social preview는 직접 올린 그림으로 바뀜(그림 파일은 이 환경에서 열리지 않아 못 봄).

@@ -1,10 +1,19 @@
 # What's Ahead
 
+[![CI](https://github.com/seegongsik/whats-ahead/actions/workflows/ci.yml/badge.svg)](https://github.com/seegongsik/whats-ahead/actions/workflows/ci.yml)
+
 **One photo of a street, and the next 5 km of it on your phone: every place the map knows at its distance and on its side, the ones a visitor would know named by Meta's open-weight Muse Spark Open, and the signs in your photo found by SAM 3.1 and flown back onto the map.** An entry for the Meta Global AI Developer Hackathon (October to November 2026; Indie developer track, theme Build for Your World), built on Meta's models and Overture Maps.
 
 **Try it** at https://whats-ahead.vercel.app (Chrome, Edge or Safari; on a phone on a street, Open camera). Away from a street, fly down one from the map alone: [Fifth Avenue](https://whats-ahead.vercel.app/?street=fifth-avenue) · [Hollywood Boulevard](https://whats-ahead.vercel.app/?street=hollywood-boulevard) · [Market Street](https://whats-ahead.vercel.app/?street=market-street) · [7th Avenue](https://whats-ahead.vercel.app/?street=7th-avenue) · [Michigan Avenue](https://whats-ahead.vercel.app/?street=michigan-avenue) · [Oxford Street](https://whats-ahead.vercel.app/?street=oxford-street) · [Champs-Élysées](https://whats-ahead.vercel.app/?street=champs-elysees) · [Ginza](https://whats-ahead.vercel.app/?street=ginza) · [Gangnam-daero](https://whats-ahead.vercel.app/?street=gangnam-daero).
 
 **Watch** the demo video (2 min 42 s): https://www.youtube.com/watch?v=zp4RGLqV05c. It shows a photo taken at Times Square with SAM 3.1's outlines of its signs, 7th Avenue and Fifth Avenue, a walk planned by Muse Spark, and a real ride down a country road in Korea (recorded 2026-10-31 on an earlier build).
+
+## Try it in a minute
+
+1. Open https://whats-ahead.vercel.app/?street=fifth-avenue on a phone or a laptop: the readings come in, then a light runs up Fifth Avenue and stops at the landmarks Muse Spark Open picked (✦ with its reason).
+2. Tap a chip (Cafés, Restaurants…) to send the light down the street again for one kind. Pinch or scroll to zoom in until every place in the stretch has its name.
+3. Tap a place: how far on foot, which side, and its Instagram, Facebook page or website when the map has them.
+4. Tap Plan a walk and pick a theme: Muse Spark Open plans the stops, and Simulate walks them. On a phone on a real street, go back to the home page, tap Open camera and take one photo down the street.
 
 <p>
 <img src="docs/screenshots/2026-11-01-fifth-avenue-readings.jpg" width="250" alt="The readings while Fifth Avenue opens, over a radar seen at a slant: GPS, heading 29° NNE, 5th Avenue, 5.0 km ahead, 763 places, landmarks: 6 picked by Muse Spark, saved 2026-11-01">
@@ -143,9 +152,10 @@ Server side only; `/api/status` returns booleans.
 | `hyparquet` | Reads Overture's Parquet files on the server (row groups and columns by range request; zstd through Node's own `zlib`) | MIT |
 | `@meta-sam/parser` | Meta's reader for SAM 3.1's token text: boxes, and masks turned into SVG outlines (server) | SAM License |
 | `vite`, `vitest` | build, dev server, tests | MIT |
+| `actions/checkout`, `actions/setup-node` (GitHub Actions) | CI: lint, build, tests and the functions check on every push | MIT |
 | `typescript`, `typescript-eslint`, `eslint`, `@eslint/js`, `globals`, `@types/node` | types and lint | Apache-2.0 / MIT |
 
-All application code was written in this repository during the hackathon (from 2026-10-27 02:00 KST); the repository's first commit (2026-10-26) holds only the license file GitHub adds to a new repository.
+All application code was written in this repository during the hackathon (from 2026-10-27 02:00 KST); the repository's first commit (2026-10-26) holds only the license file GitHub adds to a new repository. Built solo by Minwoo Kwon, with Claude Code as the coding assistant; the commit history shows every step.
 
 | Media | Source | License |
 | --- | --- | --- |

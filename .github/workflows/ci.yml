@@ -1,0 +1,27 @@
+# Lint, type check and build, unit tests, and the per-file transpile of the Vercel functions,
+# on every push to main and every pull request. The live demo-street check (npm run check:demo)
+# is not run here: it calls the deployment.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npm test
+      - run: npm run check:api
