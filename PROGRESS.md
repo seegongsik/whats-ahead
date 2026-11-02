@@ -1,5 +1,14 @@
 # PROGRESS
 
+## 2026-11-02 (KST) · 7일 차 ②: 제출
+- PR #34 머지(민우 「머지해줘」). 배포 뒤 `npm run check:demo` 18개 통과. README 맨 위 「Watch」에 데모 영상 링크.
+- 민우가 GitHub 저장소 About과 Social preview를 고침. 확인(GitHub API·저장소 페이지): 설명과 웹사이트(whats-ahead.vercel.app)는 새것. 토픽 12개 중 하나가 오타(`warlking` → `walking`, 민우가 고칠 것). Social preview는 직접 올린 그림으로 바뀜(그림 파일은 이 환경에서 열리지 않아 못 봄).
+- 민우: anchor-orbit-risk 저장소를 지울까? → 지우지 말고 비공개로 두기를 권함. DECISIONS D6의 근거이고, 지우면 90일 안에만 되살릴 수 있고, 다른 대회에 낸 것이면 지우면 안 됨. 결정은 민우.
+- 제출(민우, 2026-11-02 오후, Cerebral Valley 양식): 팀 What's Ahead, Indie Developer Track, Build for Your World, X 링크는 비움. 프로젝트 설명, GitHub 주소, 데모 영상 https://www.youtube.com/watch?v=zp4RGLqV05c, Meta 제품 사용, Meta 모델이 중요한 이유, Baseten 의견, 설문(민우가 고름).
+  - 제출 직전에 고친 것: SAM 문장 두 개를 「SAM이 간판을 표시하고, Muse Spark가 지도의 이름을 읽은 간판만 지도로 날아간다」로 정확히 함. 설문의 「프로덕션 걸림돌」 제안에서 「Not available in our country or region」을 뺌(쓴 모델은 한국에서 잘 됐고, 한국에서 막힌 것은 쓰지 않은 Muse Wonder).
+  - 제출 화면에 「Update Project」 버튼이 있어 마감(11월 5일 11:00 KST) 전에는 고칠 수 있어 보임. 확인 필요.
+- 심사 기간: 앱 코드는 되도록 건드리지 않음. 데모 거리 9곳은 배포 안의 저장본(2026-11-01)으로 열리고, Muse Spark나 SAM이 답하지 않아도 지도의 순위로 돌아감.
+
 ## 2026-11-02 (KST) · 7일 차 ①: PR #33 머지, 데모 영상 마무리, 제출 준비
 - PR #33 머지(민우 「머지해줘」). 문서만 바뀜. 배포 뒤 `npm run check:demo` 18개 통과(두 주소 9곳, 스냅숏 모두 HIT, 「saved 2026-11-01」).
 - 민우: 타임스퀘어 사진을 데모 영상에 써도 됨(저작권 문제 없으면) → CC BY-SA 4.0의 조건을 영상에 맞춤: 출처(사진 장면과 끝 카드에 촬영자·Mapillary·라이선스·고친 점), 같은 라이선스(끝 카드 「This video … CC BY-SA 4.0」), YouTube는 표준 라이선스 그대로(YouTube의 CC는 CC BY라 SA와 맞지 않음), 설명란에 출처와 라이선스 링크. 영상에 소리 없음.
