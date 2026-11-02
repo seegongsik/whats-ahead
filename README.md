@@ -4,6 +4,8 @@
 
 **Try it** at https://whats-ahead.vercel.app (Chrome, Edge or Safari; on a phone on a street, Open camera). Away from a street, fly down one from the map alone: [Fifth Avenue](https://whats-ahead.vercel.app/?street=fifth-avenue) · [Hollywood Boulevard](https://whats-ahead.vercel.app/?street=hollywood-boulevard) · [Market Street](https://whats-ahead.vercel.app/?street=market-street) · [7th Avenue](https://whats-ahead.vercel.app/?street=7th-avenue) · [Michigan Avenue](https://whats-ahead.vercel.app/?street=michigan-avenue) · [Oxford Street](https://whats-ahead.vercel.app/?street=oxford-street) · [Champs-Élysées](https://whats-ahead.vercel.app/?street=champs-elysees) · [Ginza](https://whats-ahead.vercel.app/?street=ginza) · [Gangnam-daero](https://whats-ahead.vercel.app/?street=gangnam-daero).
 
+**Watch** the demo video (2 min 42 s): https://www.youtube.com/watch?v=zp4RGLqV05c. It shows a photo taken at Times Square with SAM 3.1's outlines of its signs, 7th Avenue and Fifth Avenue, a walk planned by Muse Spark, and a real ride down a country road in Korea (recorded 2026-10-31 on an earlier build).
+
 <p>
 <img src="docs/screenshots/2026-11-01-fifth-avenue-readings.jpg" width="250" alt="The readings while Fifth Avenue opens, over a radar seen at a slant: GPS, heading 29° NNE, 5th Avenue, 5.0 km ahead, 763 places, landmarks: 6 picked by Muse Spark, saved 2026-11-01">
 <img src="docs/screenshots/2026-11-01-fifth-avenue-landmark.jpg" width="250" alt="The light stopping at Cartier Fifth Avenue Mansion: landmark 3 of 6, flagship by Muse Spark's reason, about nine minutes on foot, its rings running out over the ground">
@@ -148,6 +150,7 @@ All application code was written in this repository during the hackathon (from 2
 | Media | Source | License |
 | --- | --- | --- |
 | The photo in the landing clip `public/demo/whats-ahead-loop.mp4` | Times Square, looking down 7th Avenue, 2022-04-05, by CartographDots on [Mapillary](https://www.mapillary.com) (Meta's street-level imagery); cropped to 3:4 and a face on a billboard blurred | CC BY-SA 4.0. The clip adapts it, so the clip itself is under CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/); the rest of the repository is not |
+| The demo video on YouTube (not in the repository) | The app on the deployment; the same Times Square photo, with the outlines of its signs from one call to the deployment's SAM 3.1 route; Minwoo's screen recording of a ride on Namyang-ro, Korea, on 2026-10-31 (the address bar cut off, a notification left out, personal details on a Facebook page blurred) | CC BY-SA 4.0, as it adapts the photo |
 
 ## Limits
 
