@@ -11,7 +11,8 @@
 - 데모 영상(레포 밖): 2분 42초, 1920×1080, 25.1 MB. YouTube 설명란에 챕터 8개, 썸네일(제목 카드). 세로 24초 컷은 그대로.
 - 민우: 꼭 YouTube에 올려야 하나? → 양식의 「3-Minute Demo Video」는 링크 칸(필수)이고 예시가 YouTube 주소. 「일부 공개」면 충분. Most Viral은 X 게시물로 보므로 YouTube 공개 범위와 상관없음(전에 「공개」라고 한 것은 틀림).
 - GitHub 저장소 About이 아직 옛 What-If Camera 설명과 옛 주소 → 민우가 붙여 넣을 설명·웹사이트·토픽과 Social preview(`public/og.jpg`, 1280×640)를 드림. 확인 필요(민우).
-- 할 일(민우): YouTube에 올린 링크를 주면 README 맨 위에 넣음. 양식 제출(마감 11월 5일 11:00 KST).
+- YouTube에 올림(민우, 일부 공개): https://www.youtube.com/watch?v=zp4RGLqV05c. 채널 인증(전화번호 한 개로 두 채널까지)이 안 돼 설명란의 링크가 클릭되지 않으므로 주소는 `https://` 없이 글자로, 썸네일은 YouTube가 고른 장면. README 맨 위(「Watch」)와 Media 표(CC BY-SA 4.0)에 넣음.
+- 할 일(민우): GitHub 저장소 About(설명·웹사이트·토픽)과 Social preview, 양식 제출(마감 11월 5일 11:00 KST).
 
 ## 2026-11-01 (KST) · 6일 차 ⑤: PR #31·#32 머지 뒤, 채점 기준에 비춰 보기, 「왜 필요한가」
 - PR #31·#32 머지(민우 「둘 다 머지해줘」). 실서버 두 주소: 데모 거리(5번가·7번가·긴자)가 `/demo/streets/<id>.json` 하나만 받고 API 호출 없이 열림, 판독 2.3~2.5초(페이지 열기 포함), 「saved 2026-11-01」, 버튼 「Plan a walk」, 7번가 스냅숏 798곳에 철거·폐점한 곳 없음, 페이지 오류 0. `npm run check:demo` 18개 통과(스냅숏 18개 46~178 ms).
